@@ -45,11 +45,24 @@ setup(
     name='wsnotifier',
     description='Gevent based Asynchronous WebSocket Server with HTTP APIs.',
     version=prepare_version(),
+    keywords='websocket http ws server',
     packages=find_packages(exclude=('unittests', 'unittests.*')),
+    entry_points={
+        'console_scripts': ['wsnotifier = wsnotifier.notifications:run_wsnotifier_with_default_config']
+    },
     include_package_data=True,
     install_requires=install_requires,
     tests_require=tests_require,
     test_suite='nose.collector',
-    zip_safe=True
+    zip_safe=False,
+    platforms=['any'],
+    classifiers=[
+        'Operating System :: POSIX',
+        'Programming Language :: Python',
+        'Environment :: Web Environment',
+        'Topic :: Internet',
+        'Topic :: Internet :: WWW/HTTP',
+        'Topic :: Utilities',
+    ],
 )
 

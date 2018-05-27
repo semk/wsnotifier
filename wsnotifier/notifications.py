@@ -6,6 +6,7 @@
 
 
 import os
+import sys
 import json
 import gevent
 import argparse
@@ -206,6 +207,7 @@ def setup_logging(log_level=None, logs_path=None):
     rootlogger = logging.getLogger()
     rootlogger.setLevel(level)
     rootlogger.addHandler(loghandler)
+    rootlogger.addHandler(logging.StreamHandler(sys.stdout))
 
 
 def get_app(logs_path=None, log_level=None):
@@ -232,7 +234,7 @@ def run(host='0.0.0.0', port=1729, logs_path='notifier.log', log_level='INFO'):
     logs_path = os.path.abspath(logs_path or args.logs_path)
     setup_logging(log_level=log_level, logs_path=logs_path)
 
-    log.info("Starting wsnotifier on ws://{}:{} and http://{}:{}".format(host, port, host, port))
+    log.info("Starting wsnotifier on ws://{}:{}/alerts and http://{}:{}/alerts".format(host, port, host, port))
 
     server = pywsgi.WSGIServer((host, port), app, handler_class=WebSocketHandler)
     try:
@@ -241,8 +243,10 @@ def run(host='0.0.0.0', port=1729, logs_path='notifier.log', log_level='INFO'):
         log.warning('Interrupted. Stopping wsnotifier')
 
 
-if __name__ == "__main__":
-    import os
-
+def run_wsnotifier_with_default_config():
     logs_dir = os.path.join(os.path.expanduser('~/wsnotifier'), 'logs')
     run(log_level='INFO', logs_path=logs_dir + constants.NOTIFIER_LOG_FILE)
+
+
+if __name__ == "__main__":
+    run_wsnotifier_with_default_config()
