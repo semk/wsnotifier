@@ -1,6 +1,6 @@
 # wsnotifier
 
-wsnotifier is a Gevent based Asynchronous WebSocket Server written in Python. wsnotifier exposes HTTP APIs for forwarding the messages to the websocket clients. This makes it easier to use the service with any web application.
+wsnotifier is a Gevent based Asynchronous WebSocket Server written in Python. wsnotifier exposes HTTP APIs for forwarding the messages to the websocket clients. This makes it easier to use the service with any web application. It's completely written in Python and doesn't depend on external systems like Redis for storing/retrieving messages.
 
 ## Installation
 
@@ -29,7 +29,7 @@ You can use any HTTP client to send the messages. This will be forwarded to all 
 	$ curl -X POST -H "Content-Type: application/json" -d '{"id": "unique-message-id", "type": "important", "message": "important message"}' http://0.0.0.0:1729/alerts
 	{"status": "success"}
 
-You can see the message coming on the `wscat` client.
+You can see the forwarded message appearing on the `wscat` client instantly.
 
 	$ wscat -c ws://localhost:1729/alerts
 	connected (press CTRL+C to quit)

@@ -2,7 +2,7 @@
 #
 # Author: Sreejith Kesavan <sreejithemk@gmail.com>
 #
-# Description: Gevent based Asynchronous WebSocket Server with HTTP APIs.
+# Description: Gevent based Asynchronous WebSocket Server with HTTP forwarder APIs
 
 
 def enum(**enums):
