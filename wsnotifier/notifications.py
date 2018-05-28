@@ -9,6 +9,7 @@ import os
 import sys
 import json
 import gevent
+import gevent.queue
 import argparse
 import logging
 import logging.handlers
@@ -25,37 +26,6 @@ sockets = Sockets(app)
 log = logging.getLogger(__name__)
 
 
-class Notifications(object):
-
-    def __new__(cls):
-        if '_notifications_instance' not in cls.__dict__:
-            cls._notifications_instance = object.__new__(cls)
-            cls._notifications_instance.init()
-        return cls._notifications_instance
-
-    def init(self):
-        self.messages = {}
-
-    def add_message(self, message):
-        self.messages[message.id] = message
-
-    def remove_message(self, msg_id):
-        try:
-            log.info('Removing Message with id {}'.format(msg_id))
-            del self.messages[msg_id]
-        except ValueError:
-            pass
-
-    def get_messages(self):
-        while True:
-            gevent.sleep(0.1)
-            for message_id, message in self.messages.iteritems():
-                yield message
-
-
-notifications = Notifications()
-
-
 class DisplayType:
 
     NO_DISPLAY = 0
@@ -66,27 +36,27 @@ class Message(object):
     """Creating an alert message. Message should contain type and message content."""
 
     def __init__(
-            self, msg_id, msg_type, message, show_time=datetime.datetime.now(),
+            self, msg_id, msg_type, message, start_time=datetime.datetime.now(),
             end_time=datetime.datetime.now(), interval=datetime.timedelta(1)):
-        """The show_time, end_time and interval are optional parameters based on requirements.
-        show_time will be the first time to display, so should hold a value as (start + interval).
-        But if show_time has been mentioned then, end_time is mandatory"""
+        """The start_time, end_time and interval are optional parameters based on requirements.
+        start_time will be the first time to display, so should hold a value as (start + interval).
+        But if start_time has been mentioned then, end_time is mandatory"""
         self.id = msg_id
         self.type = msg_type
         self.message = message
-        self.show_time = show_time
+        self.start_time = start_time
         self.end_time = end_time
         self.interval = interval
 
     def to_be_displayed(self):
-        if self.show_time > self.end_time:
+        if self.start_time > self.end_time:
             log.info(
                 'Show time greater than end time, do not show and pop the message')
             return DisplayType.NO_DISPLAY
-        elif datetime.datetime.now() >= self.show_time:
+        elif datetime.datetime.now() >= self.start_time:
             log.info('Current time greater than equal to show time, '
                      'show message and update show time')
-            self.show_time += self.interval
+            self.start_time += self.interval
             return DisplayType.DISPLAY
 
     @property
@@ -100,22 +70,53 @@ class Message(object):
         )
 
 
+class MessageDB(object):
+
+    def __new__(cls):
+        if '_notifications_instance' not in cls.__dict__:
+            cls._notifications_instance = object.__new__(cls)
+            cls._notifications_instance.init()
+        return cls._notifications_instance
+
+    def init(self):
+        self.messages = gevent.queue.Queue()
+
+    def add_message(self, message):
+        self.messages.put(message)
+
+    def get_messages(self):
+        for message in self.messages:
+            yield message
+
+
 class Notifier(object):
     """Interface for registering and updating WebSocket clients."""
 
     def __init__(self):
         self.clients = []
-        self.notifications = Notifications()
+        self.message_db = MessageDB()
+        # Message ids that will be marked for removal
+        self.stale_message_ids = []
+
+    def add_message(self, message):
+        self.message_db.add_message(message)
+
+    def remove_message(self, msg_id):
+        self.stale_message_ids.append(msg_id)
 
     def __iter_data(self):
-        for message in self.notifications.get_messages():
+        for message in self.message_db.get_messages():
+            if message.id in self.stale_message_ids:
+                # Ignore this message as it was maked for removal
+                continue
+
             to_show = message.to_be_displayed()
             if to_show == DisplayType.DISPLAY:
                 log.info('Showing the message: {}'.format(message.message))
                 yield message
-            elif to_show == DisplayType.NO_DISPLAY:
-                log.info('Popping the message: {}'.format(message.message))
-                self.notifications.remove_message(message.id)
+            # elif to_show == DisplayType.NO_DISPLAY:
+            #     log.info('Popping the message: {}'.format(message.message))
+            #     self.message_db.remove_message(message.id)
 
     def register(self, client):
         """Register a WebSocket connection for Redis updates."""
@@ -135,7 +136,7 @@ class Notifier(object):
             log.info('Sending data to socket {}'.format(client))
 
             if data.type == constants.notification_type.SCHEDULE:
-                delta = data.end_time - data.show_time
+                delta = data.end_time - data.start_time
                 data.message = data.message.format(delta.days)
             client.send(data.json)
         except Exception:
@@ -171,20 +172,20 @@ def define_routes(notifier):
         _message = json.loads(request.data)
         message = Message(
             _message['id'], _message['type'], _message['message'],
-            show_time=dateutil.parser.parse(_message.get(
-                'show_time', datetime.datetime.now().isoformat())),
+            start_time=dateutil.parser.parse(_message.get(
+                'start_time', datetime.datetime.now().isoformat())),
             end_time=dateutil.parser.parse(_message.get(
                 'end_time', datetime.datetime.now().isoformat())),
             interval=datetime.timedelta(
                 seconds=_message.get('interval', 60 * 60 * 24))
         )
-        notifications.add_message(message)
+        notifier.add_message(message)
         return json.dumps({'status': 'success'})
 
     @app.route('/alerts', methods=['DELETE'])
     def remove_message():
         _message = json.loads(request.data)
-        notifications.remove_message(_message['id'])
+        notifier.remove_message(_message['id'])
         return json.dumps({'status': 'success'})
 
 

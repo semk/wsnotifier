@@ -19,14 +19,14 @@ def post_alert(
         msg_id,
         msg_type,
         message,
-        show_time=datetime.datetime.now().isoformat(),
+        start_time=datetime.datetime.now().isoformat(),
         end_time=datetime.datetime.now().isoformat(),
         interval=60 * 60 * 24, notification_url=constants.DEFAULT_NOTIFICATION_SERVICE_URL):
     message = {
         'id': msg_id,
         'type': msg_type,
         'message': message,
-        'show_time': show_time,
+        'start_time': start_time,
         'end_time': end_time,
         'interval': interval
     }
