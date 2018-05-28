@@ -4,11 +4,22 @@ wsnotifier is a lightweight [gevent](http://www.gevent.org/) based asynchronous 
 
 ## Installation
 
+You can install using `pip`
+
 	$ pip install git+https://github.com/semk/wsnotifier.git
+
+Or using docker
+
+	$ docker pull semk/wsnotifier
 
 ## Running wsnotifier server
 
 	$ wsnotifier
+	Starting wsnotifier on ws://0.0.0.0:1729/alerts and http://0.0.0.0:1729/alerts
+
+Or using docker
+
+	$ docker run -p 1729:1729 --rm -it semk/wsnotifier
 	Starting wsnotifier on ws://0.0.0.0:1729/alerts and http://0.0.0.0:1729/alerts
 
 ## Connecting to wsnotifier via a websocket client
@@ -22,9 +33,9 @@ Connect to the websocket server at `ws://0.0.0.0:1729/alerts`
 	$ wscat -c ws://localhost:1729/alerts
 	connected (press CTRL+C to quit)
 
-## Posting messages to wsnotifier via HTTP so it can forward to the clients.
+## Posting messages to wsnotifier for forwarding to websocket clients.
 
-You can use any HTTP client to send the messages. This will be forwarded to all the websocket clients asynchronously. A Python client for wsnotifier is available [here](wsnotifier/notification_client.py)
+You can use any HTTP client to send the messages. This will be forwarded to all the connected websocket clients asynchronously. A Python client for wsnotifier is available [here](wsnotifier/notification_client.py)
 
 	$ curl -X POST -H "Content-Type: application/json" -d '{"id": "unique-message-id", "type": "important", "message": "important message"}' http://0.0.0.0:1729/alerts
 	{"status": "success"}
