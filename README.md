@@ -35,7 +35,7 @@ Connect to the websocket server at `ws://0.0.0.0:1729/alerts`
 
 ## Posting messages to wsnotifier for forwarding to websocket clients.
 
-You can use any HTTP client to send the messages. This will be forwarded to all the connected websocket clients asynchronously. A Python client for wsnotifier is available [here](wsnotifier/notification_client.py)
+You can use any HTTP client to send the messages. This will be forwarded to all the connected websocket clients asynchronously. A Python client for wsnotifier is available [here](wsnotifier/notify.py)
 
 	$ curl -X POST -H "Content-Type: application/json" -d '{"id": "unique-message-id", "type": "important", "message": "important message"}' http://0.0.0.0:1729/alerts
 	{"status": "success"}

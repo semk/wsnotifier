@@ -48,7 +48,7 @@ setup(
     keywords='websocket http ws server',
     packages=find_packages(exclude=('unittests', 'unittests.*')),
     entry_points={
-        'console_scripts': ['wsnotifier = wsnotifier.notifications:run_wsnotifier_with_default_config']
+        'console_scripts': ['wsnotifier = wsnotifier.notifier:run_wsnotifier_with_default_config']
     },
     include_package_data=True,
     install_requires=install_requires,
