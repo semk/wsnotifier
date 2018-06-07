@@ -26,11 +26,12 @@ install_requires = [
 
 
 setup(
-    author='Sreejith Kesavan',
     name='wsnotifier',
     description='Gevent based Asynchronous WebSocket Server with HTTP APIs.',
     version='1.0.1',
     keywords='websocket http ws server',
+    author='Sreejith Kesavan',
+    author_email='sreejithemk@gmail.com',
     packages=find_packages(exclude=('tests', 'tests.*')),
     entry_points={
         'console_scripts': ['wsnotifier = wsnotifier.notifier:run_wsnotifier_with_default_config']
@@ -51,7 +52,7 @@ setup(
         'Programming Language :: Python',
         'Topic :: Internet',
         'Topic :: Internet :: WWW/HTTP',
-        'Topic :: Utilities',
-    ],
+        'Topic :: Utilities'
+    ]
 )
 
