@@ -10,24 +10,6 @@ import ConfigParser
 from setuptools import setup, find_packages
 
 
-def prepare_version():
-    """
-    Method to prepare release version, _build_number will be used for internal purpose
-    :return:
-    """
-    config = ConfigParser.ConfigParser()
-    config.read('version.txt')
-    section = 'version'
-    _major_release = config.getint(section, 'major.release')
-    _minor_release = config.getint(section, 'minor.release')
-    _point_release = config.getint(section, 'point.release')
-    _build_number = config.getint(section, 'build.number')
-    if _build_number != 0:
-        return "%s.%s.%s.%s" % (_major_release, _minor_release, _point_release, _build_number)
-    else:
-        return "%s.%s.%s" % (_major_release, _minor_release, _point_release)
-
-
 tests_require = ['nose == 1.3.7', 'mock == 1.3.0', 'coverage >= 4.0.3']
 
 install_requires = [
@@ -44,7 +26,7 @@ setup(
     author='Sreejith Kesavan',
     name='wsnotifier',
     description='Gevent based Asynchronous WebSocket Server with HTTP APIs.',
-    version=prepare_version(),
+    version='1.0.1',
     keywords='websocket http ws server',
     packages=find_packages(exclude=('unittests', 'unittests.*')),
     entry_points={
@@ -54,12 +36,13 @@ setup(
     install_requires=install_requires,
     tests_require=tests_require,
     test_suite='nose.collector',
-    zip_safe=False,
+    zip_safe=True,
     platforms=['any'],
     classifiers=[
+        'Environment :: Web Environment',
+        'Framework :: Flask',
         'Operating System :: POSIX',
         'Programming Language :: Python',
-        'Environment :: Web Environment',
         'Topic :: Internet',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Utilities',

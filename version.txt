@@ -1,6 +1,0 @@
-[version]
-# Property file to manage versioning of wsnotifier package
-major.release : 1
-minor.release : 0
-point.release : 0
-build.number :  2
