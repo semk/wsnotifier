@@ -6,11 +6,14 @@
 
 
 import ConfigParser
-
 from setuptools import setup, find_packages
 
 
-tests_require = ['nose == 1.3.7', 'mock == 1.3.0', 'coverage >= 4.0.3']
+tests_require = [
+    'nose == 1.3.7', 
+    'mock == 1.3.0', 
+    'coverage >= 4.0.3'
+]
 
 install_requires = [
     'gevent == 1.1.1',
@@ -28,7 +31,7 @@ setup(
     description='Gevent based Asynchronous WebSocket Server with HTTP APIs.',
     version='1.0.1',
     keywords='websocket http ws server',
-    packages=find_packages(exclude=('unittests', 'unittests.*')),
+    packages=find_packages(exclude=('tests', 'tests.*')),
     entry_points={
         'console_scripts': ['wsnotifier = wsnotifier.notifier:run_wsnotifier_with_default_config']
     },
