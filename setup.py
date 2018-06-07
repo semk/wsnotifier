@@ -10,18 +10,18 @@ from setuptools import setup, find_packages
 
 
 tests_require = [
-    'nose == 1.3.7', 
-    'mock == 1.3.0', 
+    'nose >= 1.3.7', 
+    'mock >= 1.3.0', 
     'coverage >= 4.0.3'
 ]
 
 install_requires = [
-    'gevent == 1.1.1',
-    'gunicorn == 19.4.5',
-    'Flask-Sockets == 0.2.0',
-    'flask == 0.10.1',
-    'requests == 2.9.1',
-    'python-dateutil == 2.5.3'
+    'gevent >= 1.1.1',
+    'gunicorn >= 19.4.5',
+    'Flask-Sockets >= 0.2.0',
+    'flask >= 0.10.1',
+    'requests >= 2.9.1',
+    'python-dateutil >= 2.5.3'
 ]
 
 
