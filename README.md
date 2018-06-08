@@ -4,7 +4,7 @@
 
 wsnotifier is a lightweight [gevent](http://www.gevent.org/) based asynchronous websocket Server written in Python. wsnotifier exposes HTTP APIs for forwarding the messages to the websocket clients. This makes it easier to use the service with any web application. It's completely written in Python and doesn't depend on external systems like Redis for storing/retrieving messages.
 
-[![wsnotifier flow](wsnotifier_flow.png)](https://travis-ci.org/semk/wsnotifier)
+[![wsnotifier components](wsnotifier_flow.png)](https://github.com/semk/wsnotifier)
 
 ## Installation
 

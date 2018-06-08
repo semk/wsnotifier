@@ -10,6 +10,8 @@ easier to use the service with any web application. It’s completely
 written in Python and doesn’t depend on external systems like Redis for
 storing/retrieving messages.
 
+`wsnotifier components <https://github.com/semk/wsnotifier>`__
+
 Installation
 ------------
 
