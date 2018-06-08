@@ -25,10 +25,16 @@ install_requires = [
 ]
 
 
+def get_readme():
+    with open('README.rst') as readme:
+        return readme.read()
+
+
 setup(
     name='wsnotifier',
     description='Gevent based Asynchronous WebSocket Server with HTTP APIs.',
-    version='1.0.1',
+    long_description=get_readme(),
+    version='1.0.3',
     keywords='websocket http ws server',
     author='Sreejith Kesavan',
     author_email='sreejithemk@gmail.com',
