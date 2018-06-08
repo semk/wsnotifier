@@ -34,7 +34,7 @@ setup(
     name='wsnotifier',
     description='Gevent based Asynchronous WebSocket Server with HTTP APIs.',
     long_description=get_readme(),
-    version='1.0.3',
+    version='1.0.4',
     keywords='websocket http ws server',
     author='Sreejith Kesavan',
     author_email='sreejithemk@gmail.com',
